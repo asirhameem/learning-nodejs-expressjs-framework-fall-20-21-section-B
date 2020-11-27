@@ -9,14 +9,21 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
 
     var user = {
-        username: req.body.email,
+        email: req.body.email,
         password: req.body.password
     };
 
     userModel.validate(user, function(status) {
         if (status) {
-            res.cookie('email', req.body.email);
-            res.redirect('/home');
+            userModel.getByEmail(user.email, function(results) {
+                res.cookie('email', req.body.email);
+                res.cookie('name', results[0].name);
+                res.cookie('gender', results[0].gender);
+                res.cookie('type', results[0].type)
+
+                res.redirect('/home');
+            });
+
         } else {
             res.redirect('/login');
         }

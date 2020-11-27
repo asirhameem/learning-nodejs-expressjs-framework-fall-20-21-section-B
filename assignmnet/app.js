@@ -7,6 +7,7 @@ const login = require('./controller/login');
 const registration = require('./controller/registration');
 const logout = require('./controller/logout');
 const user = require('./controller/user');
+const home = require('./controller/home');
 const app = express();
 
 //config
@@ -20,7 +21,7 @@ app.use(cookieParser());
 
 app.use('/login', login);
 app.use('/registration', registration);
-// app.use('/logout', logout);
+app.use('/home', home);
 app.use('/user', user);
 
 //route
