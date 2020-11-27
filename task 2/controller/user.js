@@ -14,14 +14,14 @@ router.post('/create', (req, res) => {
         type: req.body.type
     };
 
-    userModel.insert(user, function(status) {
+    userModel.insert(user, function (status) {
         if (status) {
             res.redirect('/home/userlist');
         } else {
             res.redirect('user/create');
         }
     });
-})
+});
 
 
 router.get('/edit/:id', (req, res) => {
@@ -29,7 +29,7 @@ router.get('/edit/:id', (req, res) => {
     // var data = req.params.id;
     // res.send(data);
 
-    userModel.getById(req.params.id, function(results) {
+    userModel.getById(req.params.id, function (results) {
         res.render('user/edit', {
             user: results
         });
@@ -45,7 +45,7 @@ router.post('/edit/:id', (req, res) => {
         password: req.body.password,
         type: req.body.type
     };
-    userModel.update(user, function(status) {
+    userModel.update(user, function (status) {
         if (status) {
             res.redirect('/home/userlist');
         } else {
@@ -57,7 +57,7 @@ router.post('/edit/:id', (req, res) => {
 
 router.get('/delete/:id', (req, res) => {
 
-    userModel.getById(req.params.id, function(results) {
+    userModel.getById(req.params.id, function (results) {
         res.render('user/delete', {
             user: results
         });
@@ -66,7 +66,7 @@ router.get('/delete/:id', (req, res) => {
 
 router.post('/delete/:id', (req, res) => {
 
-    userModel.delete(req.params.id, function(status) {
+    userModel.delete(req.params.id, function (status) {
         if (status) {
             res.redirect('/home/userlist');
         } else {
