@@ -4,7 +4,7 @@ module.exports = {
 
 
     insert: function(user, callback) {
-        var sql = "insert into user VALUES ('', '" + user.name + "' ,'" + user.email + "', '" + user.password + "' ,'" + user.gender + "', '" + user.type + "')";
+        var sql = "insert into user VALUES ('', '" + user.name + "' ,'" + user.email + "', '" + user.password + "' ,'" + user.gender + "', '" + user.dp + "' ,'" + user.type + "')";
 
         //console.log(sql);
 

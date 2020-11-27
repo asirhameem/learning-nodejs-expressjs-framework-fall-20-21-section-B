@@ -3,7 +3,7 @@ const regModel = require.main.require('./models/userRegistration');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.render('registration/registration');
+    res.render('registration/Register');
 })
 
 router.post('/', (req, res) => {
@@ -13,6 +13,7 @@ router.post('/', (req, res) => {
         password: req.body.password,
         email: req.body.email,
         gender: req.body.gender,
+        dp: "",
         type: "Customer"
 
     };
