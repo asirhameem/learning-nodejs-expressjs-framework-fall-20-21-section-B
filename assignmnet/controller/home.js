@@ -12,5 +12,9 @@ router.get('/', (req, res) => {
 })
 
 
+router.get('/navbar', (req, res) => {
+    res.render('shared/navbar');
+})
+
 
 module.exports = router;

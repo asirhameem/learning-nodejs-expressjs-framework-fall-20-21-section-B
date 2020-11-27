@@ -1,82 +1,45 @@
 const express = require('express');
 const userModel = require.main.require('./models/userModel');
+const cartModel = require.main.require('./models/userModel');
+const productModel = require.main.require('./models/productModel');
+//const noticeModel = require.main.require('./models/notice-model');
 const router = express.Router();
+const fs = require('fs');
+const { check, validationResult } = require('express-validator');
+var msg = "";
 
-router.get('/create', (req, res) => {
-    res.render('user/create');
+router.get('/', (req, res) => {
+
+    productModel.getProducts(function(results) {
+        res.render('user/home', { Products: results });
+    })
 })
 
-router.post('/create', (req, res) => {
+router.get('/navbar', (req, res) => {
 
-    var user = {
-        username: req.body.username,
-        password: req.body.password,
-        type: req.body.type
-    };
+    res.render('shared/navbar', { name: req.cookies["uname"] });
 
-    userModel.insert(user, function (status) {
+})
+router.get('/showproduct/:str', (req, res) => {
+
+    productModel.getProductByCategory(req.params.str, function(results) {
+        console.log(results);
+        res.render('user/showproduct', { Products: results });
+    })
+
+})
+
+router.post('/add/:id', (req, res) => {
+    cartModel.addCart(req.params.id, req.cookies["Id"], function(status) {
         if (status) {
-            res.redirect('/home/userlist');
+            res.redirect('../cart');
         } else {
-            res.redirect('user/create');
+            console.log("Server Error");
         }
-    });
-});
-
-
-router.get('/edit/:id', (req, res) => {
-
-    // var data = req.params.id;
-    // res.send(data);
-
-    userModel.getById(req.params.id, function (results) {
-        res.render('user/edit', {
-            user: results
-        });
-    });
+    })
 })
 
 
-router.post('/edit/:id', (req, res) => {
 
-    var user = {
-        id: req.params.id,
-        username: req.body.username,
-        password: req.body.password,
-        type: req.body.type
-    };
-    userModel.update(user, function (status) {
-        if (status) {
-            res.redirect('/home/userlist');
-        } else {
-            res.redirect('user/edit');
-        }
-    });
-
-})
-
-router.get('/delete/:id', (req, res) => {
-
-    userModel.getById(req.params.id, function (results) {
-        res.render('user/delete', {
-            user: results
-        });
-    });
-})
-
-router.post('/delete/:id', (req, res) => {
-
-    userModel.delete(req.params.id, function (status) {
-        if (status) {
-            res.redirect('/home/userlist');
-        } else {
-            res.redirect('user/edit');
-        }
-    });
-})
 
 module.exports = router;
-
-
-//validation -> express-validator (https://www.npmjs.com/package/express-validator)
-//file upload -> express-fileupload (https://www.npmjs.com/package/express-fileupload)
