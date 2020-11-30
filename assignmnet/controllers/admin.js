@@ -39,17 +39,17 @@ router.get('/usertable', (req, res) => {
 router.post('/delete/:id', (req, res) => {
     userModel.delete(req.params.id, function(status) {
         if (status) {
-            res.redirect("../usertable");
+            res.redirect("/admin");
         }
     })
 
 
 })
-router.post('/deletepro/:id', (req, res) => {
+router.get('/deletepro/:id', (req, res) => {
     console.log(req.params.id);
     productModel.delete(req.params.id, function(status) {
         if (status) {
-            res.redirect("../protable");
+            res.redirect("/admin");
         } else {
             console.log("Server Error");
         }
@@ -74,10 +74,7 @@ router.post('/adduser', [check('username', 'Invalid Username')
     check('bloodgroup', 'Invalid bloodgroup')
     .exists()
     .isLength({ min: 2 }),
-    check('phone', 'Invalid Phone')
-    .exists()
-    .isLength({ min: 15 })
-    .isLength({ max: 15 }),
+
     check("password", "invalid password")
     .exists()
     .isLength({ min: 4 }),
@@ -190,6 +187,78 @@ router.post('/ostatus/:str/:id', (req, res) => {
                 console.log("server error");
             }
         })
+    } else {
+        res.redirect('/login');
+    }
+
+})
+
+router.get('/addadmin', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Admin") {
+        res.render('admin/addadmin');
+    } else {
+        res.redirect('/login');
+    }
+
+})
+
+router.post('/addadmin', [check('username', 'Invalid Username')
+    .exists()
+    .isLength({ min: 4 }),
+    check('email', 'Invalid Email')
+    .exists()
+    .isEmail(),
+    check('bloodgroup', 'Invalid bloodgroup')
+    .exists()
+    .isLength({ min: 2 }),
+
+    check("password", "invalid password")
+    .exists()
+    .isLength({ min: 4 }),
+    check("confirmpass", "Doesnt Match with password")
+    .custom((val, { req }) => {
+        if (val !== req.body.password) {
+            throw new Error("Passwords don't match");
+        } else {
+            return val;
+        }
+    }),
+    check("gender", "invalid gender")
+    .exists()
+    .isLength({ min: 2 })
+], (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Admin") {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
+
+            function myFunction(item) {
+                console.log(item);
+            }
+        } else {
+            var user = {
+                username: req.body.username,
+                email: req.body.email,
+                bloodgroup: req.body.bloodgroup,
+                phone: req.body.phone,
+                password: Buffer.from(req.body.password).toString('base64'),
+                profilepic: "...",
+                type: "Admin",
+                status: "Verified",
+                gender: req.body.gender
+            };
+
+            userModel.insert(user, function(status) {
+                if (status) {
+                    res.redirect("usertable")
+
+                } else {
+                    console.log("server failure");
+                }
+            })
+        }
     } else {
         res.redirect('/login');
     }
