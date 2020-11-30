@@ -3,11 +3,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const exSession = require('express-session');
 const cookieParser = require('cookie-parser');
-const login = require('./controller/login');
-const registration = require('./controller/registration');
-const logout = require('./controller/logout');
-const user = require('./controller/user');
-const home = require('./controller/home');
+const login = require('./controllers/login');
+const registration = require('./controllers/registration');
+const logout = require('./controllers/logout');
+const userdash = require('./controllers/userdash');
+const admin = require('./controllers/admin');
+//const pincode = require('./controllers/pincode');
 const app = express();
 
 //config
@@ -15,14 +16,22 @@ app.set('view engine', 'ejs');
 
 //middleware
 app.use('/assets', express.static('assets'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(exSession({ secret: 'my secret value', saveUninitialized: true, resave: false }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(exSession({
+    secret: 'my secret value',
+    saveUninitialized: true,
+    resave: false
+}));
 app.use(cookieParser());
 
 app.use('/login', login);
 app.use('/registration', registration);
-app.use('/home', home);
-app.use('/user', user);
+//app.use('/pincode', pincode);
+app.use('/logout', logout);
+app.use('/userdash', userdash);
+app.use('/admin', admin);
 
 //route
 app.get('/', (req, res) => {
